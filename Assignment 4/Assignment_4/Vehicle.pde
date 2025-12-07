@@ -9,6 +9,7 @@ class Vehicle {
   float bBound;
   float tBound;
   
+  
   Vehicle() {
     position = new PVector(width/2, 100);
     velocity = new PVector(0,0);

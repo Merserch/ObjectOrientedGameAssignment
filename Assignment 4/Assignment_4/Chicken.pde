@@ -7,7 +7,7 @@ class Chicken {
   PVector velocity;
   PVector acceleration;
   float startingY = 6*(height/7);
-  float limboY = height/7;
+  float limboY = height/3;
   float size = 50;
   float rBound;
   float lBound;
@@ -18,7 +18,7 @@ class Chicken {
     hp = 1;
     position = new PVector(width/2, startingY);
     velocity = new PVector(0, 0);
-    acceleration = new PVector(0, 6);
+    acceleration = new PVector(0, 0);
     faceUp = loadImage("chickenUp.png");
     faceDown = loadImage("chickenDown.png");
     dead = loadImage("chickenDead.png");
@@ -67,7 +67,7 @@ class Chicken {
         position.y = limboY;
       }
     } else if (position.y < limboY) {
-      velocity.y = (position.y - limboY)/30;
+      velocity.y = -(position.y - limboY)/30;
       position.add(velocity);
       println("Chicken at " + position.y);
       if (position.y >= (limboY - 1) && position.y != limboY) {
@@ -82,10 +82,12 @@ class Chicken {
   void moveDown() {
     
     if (click == true && clickstop == false) {
+      acceleration.y = 6;
       velocity.add(acceleration);
       clickstop = true;
     } 
-    
+    acceleration.y = -0.2;
+    velocity.add(acceleration);
     position.add(velocity);
     velocity.mult(0.9);
     println("Chicken at " + position.y);
