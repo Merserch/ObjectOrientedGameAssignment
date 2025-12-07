@@ -45,8 +45,7 @@ void draw() {
           //clicking while hovering
           if (click == true) {
             player = new Chicken();
-            car = new Vehicle();
-            freezeFrame = 90;
+            car = new Vehicle(); //TEMPORARY TESTING VEHICLE!!!!!!!!!!!!!!!!
             clickstop = true;
             gamemode = 1;
           }
@@ -62,14 +61,17 @@ void draw() {
     
     
     background(255);
-    player.display();
-    player.moveUp();
     
-    car.display();
+    player.moveUp();
+    player.display();
+    
+    
     car.move();
+    car.display();
     //when player collides with a vehicle, move to the next gamemode
     if (player.hp <= 0) {
       player.hp = 0; //contingency
+      freezeFrame = 90;
       gamemode = 2;
     }
     
@@ -85,14 +87,17 @@ void draw() {
     
     
     background(0);
-    player.display();
+    
     
     if (freezeFrame >= 0) {
       car.display();
-      freezeFrame -= 1;
+      freezeFrame --;
     } else {
       player.reposition();
+      car.position.x = width;
+      car.position.y = 700;
     }
+    player.display();
     
   } else if (gamemode == 3) {
     // ESCAPE LIMBO
@@ -103,16 +108,61 @@ void draw() {
     
     
     background(125);
-    player.display();
+    
     player.moveDown();
+    player.display();
+    car.move();
+    car.display();
+    println("HP at " + player.hp);
     
     if (player.hp <= -1) {
+      gamemode = 5;
+    }
+    if (player.position.y >= height) {
+      freezeFrame = 1;
       gamemode = 4;
     }
+  } else if (gamemode == 4) {
+    //REVIVE TRANSITION
+    
+    
+    println("freezing " + freezeFrame);
+    
+    
+    if (freezeFrame > 0 && freezeFrame < 90) {
+      background(125);
+      player.display();
+      fill(255, freezeFrame*3);
+      rect(width/2, height/2, width, height);
+      freezeFrame ++;
+    } else if (freezeFrame >= 90) {
+      background(255);
+      player.display();
+      player.position.y = player.startingY;
+      car.position.x = width/2;
+      car.position.y = 100;
+      fill(255);
+      rect(width/2, height/2, width, height);
+      freezeFrame = -90;
+    } else if (freezeFrame <= -1) {
+      background(255);
+      player.display();
+      fill(255, -(freezeFrame*3));
+      rect(width/2, height/2, width, height);
+      freezeFrame ++;
+    } else {
+      player.hp = 1;
+      gamemode = 1;
+    }
+    
+    
+    
+    
+    
   } else {
     // GAME OVER
-    
-    
+    println("GAME OVER");
+    player.display();
     
     
     
