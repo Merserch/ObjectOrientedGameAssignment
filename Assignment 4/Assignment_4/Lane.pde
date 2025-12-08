@@ -10,7 +10,7 @@ class Lane {
   Lane(int i) {
     spawnY = i;
     lane = loadImage("lane1.png");
-    position = new PVector(width/2, -12750 + (spawnY*150));
+    position = new PVector(width/2, -12900 + (spawnY*150));
     velocity = new PVector(0,0);
   }
   
@@ -22,6 +22,7 @@ class Lane {
       if (player.position.y >= (player.startingY - 1) && player.position.y != player.startingY) {
         position.y = player.startingY;
       }
+      
   }
   
   

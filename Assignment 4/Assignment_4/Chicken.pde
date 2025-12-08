@@ -46,7 +46,7 @@ class Chicken {
   void moveUp() {
 
     if (click == true && clickstop == false) {
-      position.y = position.y - 150;
+      position.y = position.y - 147;
       clickstop = true;
     } else {
       velocity.y = -(position.y - startingY)/50;

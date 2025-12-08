@@ -7,9 +7,11 @@ float playY;
 boolean click = false;
 boolean clickstop = false;
 ArrayList<Lane> lanes;
+ArrayList<Vehicle> cars;
 Lane singlelane;
 Vehicle car;
 int freezeFrame;
+boolean win;
 
 int gamemode;
 
@@ -23,6 +25,7 @@ void setup() {
   playHover = loadImage("Asset 1 hover.png");
   playX = playButton.width*2;
   playY = playButton.height *2;
+  win = false;
 }
 
 void draw() {
@@ -48,7 +51,7 @@ void draw() {
       image(playHover, width/2, height/2, playX, playY);
 
       //clicking while hovering
-      if (click == true) {
+      if (click && !clickstop) {
         player = new Chicken();
         car = new Vehicle(); //TEMPORARY TESTING VEHICLE!!!!!!!!!!!!!!!!
         lanes = new ArrayList<Lane>();  //create the lanes array
@@ -61,6 +64,9 @@ void draw() {
       }
     } else {
       image(playButton, width/2, height/2, playX, playY);
+      if (click && !clickstop) {
+        clickstop = true;
+      }
     }
   } else if (gamemode == 1) {
     // MAIN GAME
@@ -72,23 +78,42 @@ void draw() {
 
 
 
-
+    //render scene
     background(20, 255, 100);
     for (Lane p : lanes) {
       p.display();
     }
     player.moveUp();
     player.display();
-
-
     car.move();
     car.display();
+    
+    
     //when player collides with a vehicle, move to the next gamemode
     if (player.hp <= 0) {
-      
       player.hp = 0; //contingency
       freezeFrame = 90;
       gamemode = 2;
+    }
+    
+    Lane i = lanes.get(lanes.size()-1);
+  if (i.position.y >= 14100) {
+    win = true;
+  }
+    
+    //win transition
+    if (win) {
+      if (freezeFrame > 0) {
+        fill(255, freezeFrame);
+        rect(width/2, height/2, width, height);
+        freezeFrame ++;
+        if (freezeFrame >= 270) {
+          gamemode = 6;
+        }
+      } else {
+        //freezeFrame should only be 0 or -90 while playing, so this forces it to be 1 and start the transition
+        freezeFrame = 1;
+      }
     }
   } else if (gamemode == 2) {
     // DEATH TRANSITION
@@ -200,8 +225,20 @@ void draw() {
     
     
     
+    background(0, 0, 255);
+    fill(255, 255, 0);
+    rect(width/2, height/2, 50, 50);
     
-    
+    if (freezeFrame > 0) {
+      fill(255, freezeFrame);
+      rect(width/2, height/2, width, height);
+      freezeFrame --;
+    }
+    if (click && !clickstop) {
+      win = false;
+      clickstop = true;
+      gamemode = 0;
+    }
   }
 }
 
