@@ -5,6 +5,7 @@ class Lane {
   PImage lane;
   int index;
   int spawnY;
+  float carTimer;
   
   
   Lane(int i) {
@@ -12,6 +13,7 @@ class Lane {
     lane = loadImage("lane1.png");
     position = new PVector(width/2, -12900 + (spawnY*150));
     velocity = new PVector(0,0);
+    
   }
   
   void display() {

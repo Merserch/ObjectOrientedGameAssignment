@@ -8,10 +8,12 @@ boolean click = false;
 boolean clickstop = false;
 ArrayList<Lane> lanes;
 ArrayList<Vehicle> cars;
+LimboVehicle chaser;
 Lane singlelane;
 Vehicle car;
 int freezeFrame;
 boolean win;
+float repMult;
 
 int gamemode;
 
@@ -83,21 +85,23 @@ void draw() {
     for (Lane p : lanes) {
       p.display();
     }
-    player.moveUp();
-    player.display();
+    
     car.move();
     car.display();
-    
+    car.hitDetect();
+    player.moveUp();
+    player.display();
     
     //when player collides with a vehicle, move to the next gamemode
     if (player.hp <= 0) {
       player.hp = 0; //contingency
       freezeFrame = 90;
+      chaser = new LimboVehicle();
       gamemode = 2;
     }
     
     Lane i = lanes.get(lanes.size()-1);
-  if (i.position.y >= 14100) {
+  if (i.position.y >= 14065) {
     win = true;
   }
     
@@ -131,13 +135,16 @@ void draw() {
 
     if (freezeFrame >= 0) {
       car.display();
+      player.display();
       freezeFrame --;
     } else {
+      chaser.display();
+      player.display();
       player.reposition();
       car.position.x = width/2;
       car.position.y = -10;
     }
-    player.display();
+    
   } else if (gamemode == 3) {
     // ESCAPE LIMBO
 
@@ -147,10 +154,12 @@ void draw() {
 
 
     background(125);
-
+    chaser.display();
+    chaser.move();
+    chaser.hitDetect();
     player.moveDown();
     player.display();
-    car.display();
+    
     println("HP at " + player.hp);
 
     if (player.hp <= -1) {
@@ -175,6 +184,7 @@ void draw() {
 
     if (freezeFrame > 0 && freezeFrame < 90) {
       background(125);
+      chaser.display();
       player.display();
       fill(255, freezeFrame*3);
       rect(width/2, height/2, width, height);
@@ -183,6 +193,8 @@ void draw() {
       background(255);
       player.display();
       player.position.y = player.startingY;
+      chaser = null;
+      repMult += 0.5;
       car.position.x = width/2;
       car.position.y = 100;
       fill(255);
@@ -218,6 +230,7 @@ void draw() {
       freezeFrame ++;
     } else {
       background(0);
+      repMult = 0;
       gamemode = 0;
     }
   } else {
@@ -234,9 +247,10 @@ void draw() {
       rect(width/2, height/2, width, height);
       freezeFrame --;
     }
-    if (click && !clickstop) {
+    if (click && !clickstop && freezeFrame < 50) {
       win = false;
       clickstop = true;
+      repMult = 0;
       gamemode = 0;
     }
   }

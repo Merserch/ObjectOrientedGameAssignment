@@ -1,33 +1,34 @@
-class Vehicle {
+class LimboVehicle {
   PVector position;
   PVector velocity;
   PVector acceleration;
-  PImage vehicleMain;
-  float carWidth = 340;
-  float carHeight = 110;
+  PImage vehicleLimbo;
+  float carWidth = 380;
+  float carHeight = 380;
   float rBound;
   float lBound;
   float bBound;
   float tBound;
   
   
-  Vehicle() {
-    position = new PVector(width/2, 100);
-    velocity = new PVector(0,0);
-    vehicleMain = loadImage("vehicleMain.png");
+  
+  LimboVehicle() {
+    position = new PVector(width/2, -100);
+    velocity = new PVector(0,1 + repMult);
+    vehicleLimbo = loadImage("vehicleLimbo.png");
   }
   
   void display() {
     rBound = position.x + (carWidth/2);
     lBound = position.x - (carWidth/2);
-    bBound = position.y + (carHeight/2);
+    bBound = position.y + (carHeight/2.3);
     tBound = position.y - (carHeight/2);
     
-    image(vehicleMain, position.x, position.y, carWidth, carHeight);
+    image(vehicleLimbo, position.x, position.y, carWidth, carHeight);
   }
   
   void move() {
-    
+    position.add(velocity);
   }
   
   void hitDetect() {
