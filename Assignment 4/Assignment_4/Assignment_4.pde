@@ -1,5 +1,7 @@
 Chicken player;
 
+PImage home;
+PImage ending;
 PImage playButton;
 PImage playHover;
 float playX;
@@ -25,12 +27,16 @@ void setup() {
   frameRate(90);
   playButton = loadImage("Asset 1.png");
   playHover = loadImage("Asset 1 hover.png");
+  ending = loadImage("ending.png");
+  home = loadImage("homescreen.png");
   playX = playButton.width*2;
   playY = playButton.height *2;
   win = false;
 }
 
 void draw() {
+  
+  
   if (gamemode == 0) {
     // MAIN MENU
 
@@ -42,8 +48,7 @@ void draw() {
 
 
     background(0);
-
-
+    image(home, width/2, height/2);
 
     //hoverstate detection
     if (mouseX >= (width/2)-(playX/2) &&
@@ -56,6 +61,8 @@ void draw() {
       if (click && !clickstop) {
         player = new Chicken();
         car = new Vehicle(); //TEMPORARY TESTING VEHICLE!!!!!!!!!!!!!!!!
+        //Unfortunately, I'm leaving this in. I tried but don't have time to
+        //add the moving vehicles attached to each lane. 
         lanes = new ArrayList<Lane>();  //create the lanes array
         for (int i = 0; i <90; i++) {   //spawn all lanes
           lanes.add(new Lane(i));
@@ -70,6 +77,8 @@ void draw() {
         clickstop = true;
       }
     }
+    
+    
   } else if (gamemode == 1) {
     // MAIN GAME
 
@@ -85,8 +94,6 @@ void draw() {
     for (Lane p : lanes) {
       p.display();
     }
-    
-    car.move();
     car.display();
     car.hitDetect();
     player.moveUp();
@@ -100,6 +107,7 @@ void draw() {
       gamemode = 2;
     }
     
+    //The win condition is crossing the road, so this is measuring that
     Lane i = lanes.get(lanes.size()-1);
   if (i.position.y >= 14065) {
     win = true;
@@ -119,6 +127,8 @@ void draw() {
         freezeFrame = 1;
       }
     }
+    
+    
   } else if (gamemode == 2) {
     // DEATH TRANSITION
 
@@ -131,8 +141,6 @@ void draw() {
 
 
     background(0);
-
-
     if (freezeFrame >= 0) {
       car.display();
       player.display();
@@ -238,9 +246,8 @@ void draw() {
     
     
     
-    background(0, 0, 255);
-    fill(255, 255, 0);
-    rect(width/2, height/2, 50, 50);
+    background(255);
+    image(ending, width/2, height/2);
     
     if (freezeFrame > 0) {
       fill(255, freezeFrame);
