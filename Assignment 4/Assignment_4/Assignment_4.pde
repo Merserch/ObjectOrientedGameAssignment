@@ -16,6 +16,7 @@ Vehicle car;
 int freezeFrame;
 boolean win;
 float repMult;
+int renderDist = 6;
 
 int gamemode;
 
@@ -59,20 +60,15 @@ void draw() {
 
       //clicking while hovering
       if (click && !clickstop) {
-        player = new Chicken();
-        car = new Vehicle(); //TEMPORARY TESTING VEHICLE!!!!!!!!!!!!!!!!
-        //Unfortunately, I'm leaving this in. I tried but don't have time to
-        //add the moving vehicles attached to each lane. 
+        player = new Chicken();         //player
+        car = new Vehicle();            //TEMPORARY TESTING VEHICLE!!!!!!!!!!!!!!!!
         lanes = new ArrayList<Lane>();  //create the lanes array
-        for (int i = 0; i <90; i++) {   //spawn all lanes
-          lanes.add(new Lane(i));
-          println("there are " + lanes.size() + " lanes.");
-        }
+        cars = new ArrayList<Vehicle>();  //create the cars array
         clickstop = true;
-        gamemode = 1;
+        gamemode = 1;                   //start the game
       }
     } else {
-      image(playButton, width/2, height/2, playX, playY);
+      image(playButton, width/2, height/2, playX, playY); //regular play button
       if (click && !clickstop) {
         clickstop = true;
       }
@@ -88,9 +84,25 @@ void draw() {
 
 
 
+    //despawning offscreen lanes
+    for (int i = 0; i < lanes.size() - 1; i++) {
+      Lane part = lanes.get(i);
+      if (part.position.y >= 900) {
+        lanes.remove(i);
+      }
+    }
+
+    //spawning upcoming lanes
+    if (lanes.size() <= renderDist){
+      for (int i = lanes.size(); i <= renderDist; i++) {
+        lanes.add(new Lane(i));
+      }
+    }
+    
 
     //render scene
-    background(20, 255, 100);
+    background(130); //grey
+    //background(20, 255, 100); //green
     for (Lane p : lanes) {
       p.display();
     }
@@ -141,14 +153,14 @@ void draw() {
 
 
     background(0);
-    if (freezeFrame >= 0) {
+    if (freezeFrame >= 0) {    //freeze frame after impact
       car.display();
       player.display();
       freezeFrame --;
-    } else {
+    } else {                  //show chaser and move character to the correct spot
       chaser.display();
       player.display();
-      player.reposition();
+      player.reposition();    //has condition to change gamemode once in position
       car.position.x = width/2;
       car.position.y = -10;
     }
@@ -198,7 +210,7 @@ void draw() {
       rect(width/2, height/2, width, height);
       freezeFrame ++;
     } else if (freezeFrame >= 90) {
-      background(255);
+      background(130);
       player.display();
       player.position.y = player.startingY;
       chaser = null;
@@ -209,7 +221,7 @@ void draw() {
       rect(width/2, height/2, width, height);
       freezeFrame = -90;
     } else if (freezeFrame <= -1) {
-      background(255);
+      background(130);
       for (Lane p : lanes) {
       p.display();
     }
@@ -238,8 +250,7 @@ void draw() {
       freezeFrame ++;
     } else {
       background(0);
-      repMult = 0;
-      gamemode = 0;
+      reset();
     }
   } else {
     // GAME WON
@@ -255,12 +266,20 @@ void draw() {
       freezeFrame --;
     }
     if (click && !clickstop && freezeFrame < 50) {
-      win = false;
       clickstop = true;
-      repMult = 0;
-      gamemode = 0;
+      reset();
     }
   }
+}
+
+void reset() {
+  win = false;
+  repMult = 0;
+  player = null;
+  car = null;
+  lanes = null;
+  cars = null;
+  gamemode = 0;
 }
 
 void mousePressed() {
